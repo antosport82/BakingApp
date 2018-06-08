@@ -26,6 +26,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.StepsDetailsActivity"
+            android:parentActivityName=".ui.StepsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.StepsActivity" />
+        </activity>
 
         <provider
             android:name=".data.RecipeProvider"

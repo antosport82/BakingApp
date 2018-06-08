@@ -17,6 +17,11 @@ public class Step {
         this.idRecipe = idRecipe;
     }
 
+    public Step(int stepId, String shortDescription) {
+        this.id = stepId;
+        this.shortDescription = shortDescription;
+    }
+
     public int getId() {
         return id;
     }

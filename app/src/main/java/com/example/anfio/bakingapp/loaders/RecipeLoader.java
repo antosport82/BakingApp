@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 public class RecipeLoader extends AsyncTaskLoader<ArrayList<Recipe>> {
 
+    private static final String TAG = "Antonio loader";
+
     private final String mUrl;
     private ArrayList<Recipe> recipeData;
 

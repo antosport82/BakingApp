@@ -78,8 +78,8 @@ public class RecipeJsonUtils {
                 int id = stepsObject.optInt("id");
                 String shortDescription = stepsObject.optString("shortDescription");
                 String description = stepsObject.optString("description");
-                String videoUrl = stepsObject.optString("videoUrl");
-                String thumbnailUrl = stepsObject.optString("thumbnailUrl");
+                String videoUrl = stepsObject.optString("videoURL");
+                String thumbnailUrl = stepsObject.optString("thumbnailURL");
                 steps.add(new Step(id, shortDescription, description, videoUrl, thumbnailUrl, recipeId));
             }
         }

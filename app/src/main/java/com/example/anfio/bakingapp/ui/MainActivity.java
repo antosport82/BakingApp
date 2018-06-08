@@ -29,6 +29,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "Antonio";
+
     private TextView mErrorMessage;
     private ProgressBar mProgressBar;
     private RecipesListAdapter mRecipesListAdapter;
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Recipe> cursorToRecipes(Cursor cursor) {
         ArrayList<Recipe> recipes = new ArrayList<>();
+        cursor.moveToPosition(-1);
         while (cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_ID));
             String name = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME));

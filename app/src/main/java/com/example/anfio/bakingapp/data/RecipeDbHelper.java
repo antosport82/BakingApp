@@ -47,8 +47,8 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
                         RecipeContract.StepEntry.COLUMN_STEP_ID + " INTEGER NOT NULL, " +
                         RecipeContract.StepEntry.COLUMN_STEP_SHORT_DESCRIPTION + " TEXT NOT NULL, " +
                         RecipeContract.StepEntry.COLUMN_STEP_DESCRIPTION + " TEXT NOT NULL, " +
-                        RecipeContract.StepEntry.COLUMN_STEP_VIDEO_URL + " TEXT NOT NULL, " +
-                        RecipeContract.StepEntry.COLUMN_STEP_THUMBNAIL_URL + " TEXT NOT NULL, " +
+                        RecipeContract.StepEntry.COLUMN_STEP_VIDEO_URL + " TEXT, " +
+                        RecipeContract.StepEntry.COLUMN_STEP_THUMBNAIL_URL + " TEXT, " +
                         RecipeContract.StepEntry.COLUMN_RECIPE_ID + " INTEGER, " +
                         " FOREIGN KEY(" + RecipeContract.StepEntry.COLUMN_RECIPE_ID + ") REFERENCES " +
                         RecipeContract.RecipeEntry.TABLE_NAME_RECIPES + "(" + RecipeContract.RecipeEntry.COLUMN_RECIPE_ID + ")" +
