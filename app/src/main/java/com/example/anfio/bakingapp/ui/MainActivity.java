@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,17 +25,23 @@ import com.example.anfio.bakingapp.data.RecipeContract;
 import com.example.anfio.bakingapp.loaders.RecipeLoader;
 import com.example.anfio.bakingapp.models.Recipe;
 import com.example.anfio.bakingapp.utilities.Constants;
+import com.example.anfio.bakingapp.utilities.RecipeJsonUtils;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "Antonio";
+    @BindView(R.id.tv_error_message)
+    TextView mErrorMessage;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mProgressBar;
+    @BindView(R.id.rv_recipes)
+    RecyclerView mRecyclerView;
 
-    private TextView mErrorMessage;
-    private ProgressBar mProgressBar;
     private RecipesListAdapter mRecipesListAdapter;
-    private RecyclerView mRecyclerView;
     private Context mContext;
 
     private final LoaderManager.LoaderCallbacks<ArrayList<Recipe>> recipeLoader = new LoaderManager.LoaderCallbacks<ArrayList<Recipe>>() {
@@ -78,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             mProgressBar.setVisibility(View.INVISIBLE);
             if (data.getCount() != 0) {
                 showMoviesDataView();
-                ArrayList<Recipe> recipes = cursorToRecipes(data);
+                ArrayList<Recipe> recipes = RecipeJsonUtils.cursorToRecipes(data);
                 mRecipesListAdapter.setRecipeData(recipes);
             } else {
                 showErrorMessage(getString(R.string.error_message));
@@ -103,39 +110,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         mContext = getApplicationContext();
 
-        mErrorMessage = findViewById(R.id.tv_error_message);
-        mProgressBar = findViewById(R.id.pb_loading_indicator);
         mRecipesListAdapter = new RecipesListAdapter(mContext, clickHandler);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView = findViewById(R.id.rv_recipes);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mRecipesListAdapter);
+        // check if user's device is a tablet to set different layouts
+        if (getString(R.string.device).equals("tablet")) {
+            GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
+            mRecyclerView.setLayoutManager(layoutManager);
+        } else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            mRecyclerView.setLayoutManager(layoutManager);
+        }
 
+        // check if there is data in the DB
         SharedPreferences mSharedPreferences;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         Boolean has_data = mSharedPreferences.getBoolean(Constants.HAS_DATA, false);
-        if (!has_data){
+        if (!has_data) {
             mSharedPreferences.edit().putBoolean(Constants.HAS_DATA, true).apply();
             Bundle bundle = new Bundle();
             bundle.putString(Constants.JSON_RECIPE_LIST, Constants.URL);
+            // get data from the web and save it to the DB
             getSupportLoaderManager().initLoader(Constants.RECIPE_MAIN_LOADER, bundle, recipeLoader);
         } else {
+            // get data from the DB
             getSupportLoaderManager().initLoader(Constants.CURSOR_MAIN_LOADER, null, cursorLoader);
         }
-    }
-
-    private ArrayList<Recipe> cursorToRecipes(Cursor cursor) {
-        ArrayList<Recipe> recipes = new ArrayList<>();
-        cursor.moveToPosition(-1);
-        while (cursor.moveToNext()){
-            int id = cursor.getInt(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_ID));
-            String name = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME));
-            String image = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_IMAGE));
-            recipes.add(new Recipe(id, name, image));
-        }
-        return recipes;
     }
 
     private void showMoviesDataView() {

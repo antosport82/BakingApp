@@ -9,12 +9,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:layout_marginStart="2dp"
-        android:textSize="18sp"
         android:padding="6dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 
     <View
-        android:background="@android:color/darker_gray"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_width="match_parent" />
+        android:background="@android:color/darker_gray" />
 </FrameLayout>

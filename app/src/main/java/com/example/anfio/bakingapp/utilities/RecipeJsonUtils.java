@@ -1,5 +1,8 @@
 package com.example.anfio.bakingapp.utilities;
 
+import android.database.Cursor;
+
+import com.example.anfio.bakingapp.data.RecipeContract;
 import com.example.anfio.bakingapp.models.Ingredient;
 import com.example.anfio.bakingapp.models.Recipe;
 import com.example.anfio.bakingapp.models.Step;
@@ -82,6 +85,41 @@ public class RecipeJsonUtils {
                 String thumbnailUrl = stepsObject.optString("thumbnailURL");
                 steps.add(new Step(id, shortDescription, description, videoUrl, thumbnailUrl, recipeId));
             }
+        }
+        return steps;
+    }
+
+    public static ArrayList<Recipe> cursorToRecipes(Cursor cursor) {
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_ID));
+            String name = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME));
+            String image = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_IMAGE));
+            recipes.add(new Recipe(id, name, image));
+        }
+        return recipes;
+    }
+
+    public static ArrayList<Ingredient> cursorToIngredients(Cursor cursor) {
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        while (cursor.moveToNext()) {
+            double quantity = cursor.getDouble(cursor.getColumnIndex(RecipeContract.IngredientEntry.COLUMN_INGREDIENT_QUANTITY));
+            String measure = cursor.getString(cursor.getColumnIndex(RecipeContract.IngredientEntry.COLUMN_INGREDIENT_MEASURE));
+            String name = cursor.getString(cursor.getColumnIndex(RecipeContract.IngredientEntry.COLUMN_INGREDIENT_NAME));
+            ingredients.add(new Ingredient(quantity, measure, name));
+        }
+        return ingredients;
+    }
+
+    public static ArrayList<Step> cursorToSteps(Cursor cursor) {
+        ArrayList<Step> steps = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        while (cursor.moveToNext()) {
+            int stepId = cursor.getInt(cursor.getColumnIndex(RecipeContract.StepEntry.COLUMN_STEP_ID));
+            String shortDescription = cursor.getString(cursor.getColumnIndex(RecipeContract.StepEntry.COLUMN_STEP_SHORT_DESCRIPTION));
+            steps.add(new Step(stepId, shortDescription));
         }
         return steps;
     }

@@ -15,21 +15,30 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
+        android:background="#000000"
+        android:padding="6dp"
         android:text="@string/no_video"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_step_text"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_weight="4"
+        android:background="#ffe0cc"
+        android:padding="6dp"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/button_next"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="#1a0a00"
         android:text="Next step"
+        android:textColor="#ffb380"
         android:textSize="18sp" />
 
 </LinearLayout>
