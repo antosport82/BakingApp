@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingRegistry;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -22,6 +26,7 @@ import android.widget.TextView;
 import com.example.anfio.bakingapp.R;
 import com.example.anfio.bakingapp.adapters.RecipesListAdapter;
 import com.example.anfio.bakingapp.data.RecipeContract;
+import com.example.anfio.bakingapp.idlingresource.SimpleIdlingResource;
 import com.example.anfio.bakingapp.loaders.RecipeLoader;
 import com.example.anfio.bakingapp.models.Recipe;
 import com.example.anfio.bakingapp.utilities.Constants;
@@ -43,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     private RecipesListAdapter mRecipesListAdapter;
     private Context mContext;
+
+    @Nullable
+    private CountingIdlingResource mIdlingResource = new CountingIdlingResource("Recycler");
 
     private final LoaderManager.LoaderCallbacks<ArrayList<Recipe>> recipeLoader = new LoaderManager.LoaderCallbacks<ArrayList<Recipe>>() {
         @NonNull
@@ -138,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
             // get data from the DB
             getSupportLoaderManager().initLoader(Constants.CURSOR_MAIN_LOADER, null, cursorLoader);
         }
+        // Get the IdlingResource instance
+        mIdlingResource = getIdlingResource();
     }
 
     private void showMoviesDataView() {
@@ -151,5 +161,14 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setText(error);
         mErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public CountingIdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new CountingIdlingResource("Recycler");
+        }
+        return mIdlingResource;
     }
 }
