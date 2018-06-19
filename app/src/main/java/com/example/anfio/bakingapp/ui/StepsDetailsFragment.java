@@ -101,10 +101,6 @@ public class StepsDetailsFragment extends Fragment {
         // Inflate the fragment layout
         View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        mStepText = rootView.findViewById(R.id.tv_step_text);
-        simpleExoPlayerView = rootView.findViewById(R.id.player_view);
-        mNoVideo = rootView.findViewById(R.id.tv_no_video);
-        mBtNext = rootView.findViewById(R.id.button_next);
         return rootView;
     }
 
@@ -118,6 +114,11 @@ public class StepsDetailsFragment extends Fragment {
             mBtNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (player != null) {
+                        player.stop();
+                        player.release();
+                        player = null;
+                    }
                     SharedPreferences sharedPreferences;
                     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                     mStepsSize = sharedPreferences.getInt(String.valueOf(mRecipeId), 0);

@@ -25,7 +25,7 @@ public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.
 
     // The interface that receives onClick messages.
     public interface RecipeAdapterOnClickHandler {
-        void onClick(int id);
+        void onClick(int id, String recipeName);
     }
 
     public RecipesListAdapter(Context context, RecipeAdapterOnClickHandler clickHandler) {
@@ -87,8 +87,9 @@ public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.
             int adapterPosition = getAdapterPosition();
             // get recipe id at the current position
             int id = mRecipes.get(adapterPosition).getId();
-            // call onClick and pass the recipe id
-            mClickHandler.onClick(id);
+            String recipeName = mRecipes.get(adapterPosition).getRecipeName();
+            // call onClick and pass the recipe id and its name
+            mClickHandler.onClick(id, recipeName);
         }
     }
 

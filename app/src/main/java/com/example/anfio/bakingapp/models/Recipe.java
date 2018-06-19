@@ -14,7 +14,7 @@ public class Recipe {
         this.image = image;
     }
 
-    public Recipe(int id, String recipeName, String image){
+    public Recipe(int id, String recipeName, String image) {
         this.id = id;
         this.recipeName = recipeName;
         this.image = image;

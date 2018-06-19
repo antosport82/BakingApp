@@ -9,24 +9,15 @@
         android:id="@+id/rv_recipes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/tv_error_message"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:visibility="invisible" />
+        style="@style/myTextViewMain" />
 
     <!-- A progress bar that will be shown to users to indicate that recipe data is loading -->
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
+        style="@style/myLoading" />
 
 </merge>

@@ -32,9 +32,16 @@ public class StepsActivity extends AppCompatActivity {
         SharedPreferences mSharedPreferences;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         Intent intent = getIntent();
+        String mRecipeName;
         if (intent.hasExtra(Constants.INT_KEY)) {
             mRecipeId = intent.getIntExtra(Constants.INT_KEY, 0);
-            mSharedPreferences.edit().putInt(Constants.INT_RECIPE, mRecipeId).apply();
+            mRecipeName = intent.getStringExtra(Constants.RECIPE_NAME);
+            mSharedPreferences.edit().putInt(Constants.INT_RECIPE, mRecipeId)
+                    .putString(Constants.RECIPE_NAME, mRecipeName)
+                    .apply();
+        } else {
+            mRecipeName = mSharedPreferences.getString(Constants.RECIPE_NAME, getString(R.string.recipe_name));
         }
+        setTitle(mRecipeName);
     }
 }

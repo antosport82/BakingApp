@@ -1,6 +1,5 @@
 package com.example.anfio.bakingapp.ui;
 
-
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -85,7 +84,6 @@ public class MainActivityTest {
                                 0),
                         isDisplayed()));
         textView3.check(matches(withText("Steps")));
-
     }
 
     private static Matcher<View> childAtPosition(

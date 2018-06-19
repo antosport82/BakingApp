@@ -13,7 +13,7 @@ public class Constants {
     // SharedPreferences
     public static final String HAS_DATA = "has_data";
     public static final String INT_RECIPE = "int_recipe";
-
     public static final String INT_KEY = "int_key";
     public static final String INT_STEP = "int_step";
+    public static final String RECIPE_NAME = "int_step";
 }

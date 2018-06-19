@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.anfio.bakingapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,7 +38,20 @@
         <provider
             android:name=".data.RecipeProvider"
             android:authorities="com.example.anfio.bakingapp"
-            android:exported="false" />
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+
+        <receiver android:name=".widget.BakingAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_app_widget_provider_info" />
+        </receiver>
+        <service android:name=".widget.ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

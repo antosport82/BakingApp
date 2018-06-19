@@ -10,27 +10,15 @@
 
         <ImageView
             android:id="@+id/iv_recipe_image"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center_vertical|center_horizontal"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"/>
+            style="@style/myRecipeImage"
+            android:contentDescription="@string/recipe_name" />
 
         <TextView
             android:id="@+id/tv_recipe_name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            style="@style/myRecipeText" />
 
-        <!-- A gray divider line at the bottom of each task -->
     </LinearLayout>
-
+    <!-- A gray divider line at the bottom of each task -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

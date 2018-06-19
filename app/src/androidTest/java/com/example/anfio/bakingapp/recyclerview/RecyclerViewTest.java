@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.example.anfio.bakingapp.R;
-import com.example.anfio.bakingapp.idlingresource.SimpleIdlingResource;
 import com.example.anfio.bakingapp.ui.MainActivity;
 
 import org.junit.After;

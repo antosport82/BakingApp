@@ -22,8 +22,6 @@ import java.util.ArrayList;
 
 public class RecipeLoader extends AsyncTaskLoader<ArrayList<Recipe>> {
 
-    private static final String TAG = "Antonio loader";
-
     private final String mUrl;
     private ArrayList<Recipe> recipeData;
 
@@ -53,6 +51,7 @@ public class RecipeLoader extends AsyncTaskLoader<ArrayList<Recipe>> {
             // get json response in a string
             String jsonRecipeResponse = NetworkUtils
                     .getResponseFromHttpUrl(recipeRequestUrl);
+            // get data and insert it into DB
             recipeData = RecipeJsonUtils.getRecipes(jsonRecipeResponse);
             ArrayList<Ingredient> ingredientData = RecipeJsonUtils.getIngredients(jsonRecipeResponse);
             ArrayList<Step> stepData = RecipeJsonUtils.getSteps(jsonRecipeResponse);

@@ -9,8 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 import com.example.anfio.bakingapp.R;
 import com.example.anfio.bakingapp.adapters.RecipesListAdapter;
 import com.example.anfio.bakingapp.data.RecipeContract;
-import com.example.anfio.bakingapp.idlingresource.SimpleIdlingResource;
 import com.example.anfio.bakingapp.loaders.RecipeLoader;
 import com.example.anfio.bakingapp.models.Recipe;
 import com.example.anfio.bakingapp.utilities.Constants;
@@ -37,10 +34,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_error_message)
     TextView mErrorMessage;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mProgressBar;
     @BindView(R.id.rv_recipes)
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadFinished(@NonNull Loader<ArrayList<Recipe>> loader, ArrayList<Recipe> data) {
             mProgressBar.setVisibility(View.INVISIBLE);
             if (data != null) {
-                showMoviesDataView();
+                showRecipesDataView();
                 mRecipesListAdapter.setRecipeData(data);
             } else {
                 showErrorMessage(getString(R.string.error_message));
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
             mProgressBar.setVisibility(View.INVISIBLE);
             if (data.getCount() != 0) {
-                showMoviesDataView();
+                showRecipesDataView();
                 ArrayList<Recipe> recipes = RecipeJsonUtils.cursorToRecipes(data);
                 mRecipesListAdapter.setRecipeData(recipes);
             } else {
@@ -107,9 +106,10 @@ public class MainActivity extends AppCompatActivity {
     };
     private final RecipesListAdapter.RecipeAdapterOnClickHandler clickHandler = new RecipesListAdapter.RecipeAdapterOnClickHandler() {
         @Override
-        public void onClick(int id) {
+        public void onClick(int id, String recipeName) {
             Intent intent = new Intent(MainActivity.this, StepsActivity.class);
             intent.putExtra(Constants.INT_KEY, id);
+            intent.putExtra(Constants.RECIPE_NAME, recipeName);
             startActivity(intent);
         }
     };
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         mRecipesListAdapter = new RecipesListAdapter(mContext, clickHandler);
         mRecyclerView.setAdapter(mRecipesListAdapter);
         // check if user's device is a tablet to set different layouts
-        if (getString(R.string.device).equals("tablet")) {
+        if (getString(R.string.device).equals(getString(R.string.tablet))) {
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
             mRecyclerView.setLayoutManager(layoutManager);
         } else {
@@ -150,14 +150,14 @@ public class MainActivity extends AppCompatActivity {
         mIdlingResource = getIdlingResource();
     }
 
-    private void showMoviesDataView() {
-        // movies are visible, error message is hidden
+    private void showRecipesDataView() {
+        // recipes are visible, error message is hidden
         mErrorMessage.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage(String error) {
-        // error message is visible, movies are hidden
+        // error message is visible, recipes are hidden
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessage.setText(error);
         mErrorMessage.setVisibility(View.VISIBLE);

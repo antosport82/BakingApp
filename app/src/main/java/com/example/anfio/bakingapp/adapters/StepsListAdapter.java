@@ -29,6 +29,7 @@ public class StepsListAdapter extends RecyclerView.Adapter<StepsListAdapter.Step
         mContext = context;
         mClickHandler = clickHandler;
     }
+
     @NonNull
     @Override
     public StepsListAdapter.StepsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

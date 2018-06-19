@@ -1,5 +1,7 @@
 package com.example.anfio.bakingapp.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -23,6 +25,7 @@ import com.example.anfio.bakingapp.data.RecipeContract;
 import com.example.anfio.bakingapp.models.Ingredient;
 import com.example.anfio.bakingapp.utilities.Constants;
 import com.example.anfio.bakingapp.utilities.RecipeJsonUtils;
+import com.example.anfio.bakingapp.widget.BakingAppWidgetProvider;
 
 import java.util.ArrayList;
 
@@ -72,7 +75,6 @@ public class IngredientsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         LinearLayoutManager ingredientsLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        mRvIngredients = rootView.findViewById(R.id.rv_ingredients);
         mRvIngredients.setLayoutManager(ingredientsLayoutManager);
         mIngredientsListAdapter = new IngredientsListAdapter(mContext);
         mRvIngredients.setAdapter(mIngredientsListAdapter);
@@ -86,6 +88,15 @@ public class IngredientsFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRecipeId = sharedPreferences.getInt(Constants.INT_RECIPE, 0);
         getLoaderManager().initLoader(Constants.INGREDIENTS_LOADER, null, ingredientsLoader);
+        // update the widget with the data relative to the last recipe selected
+        updateWidget();
+    }
+
+    private void updateWidget() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), BakingAppWidgetProvider.class.getName());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
     }
 
     @Override

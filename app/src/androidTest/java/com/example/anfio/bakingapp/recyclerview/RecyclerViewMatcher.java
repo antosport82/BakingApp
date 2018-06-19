@@ -5,13 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Created by dannyroa on 5/10/15.
+ * Forked on Github, the matcher was created by dannyroa on 5/10/15.
  */
 
+@SuppressWarnings("UnnecessaryBoxing")
 public class RecyclerViewMatcher {
 
     private final int recyclerViewId;
@@ -51,7 +52,7 @@ public class RecyclerViewMatcher {
 
                 if (childView == null) {
                     RecyclerView recyclerView =
-                            (RecyclerView) view.getRootView().findViewById(recyclerViewId);
+                            view.getRootView().findViewById(recyclerViewId);
                     if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
                         childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
                     } else {

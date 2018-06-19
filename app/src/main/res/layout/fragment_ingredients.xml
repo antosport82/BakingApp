@@ -5,20 +5,12 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:text="Ingredients"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-        android:textSize="20sp" />
+        style="@style/myTitles"
+        android:text="@string/ingredients"
+        android:textAlignment="center" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_ingredients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:padding="8dp" />
+        style="@style/myRV" />
 
 </LinearLayout>

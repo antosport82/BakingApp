@@ -2,4 +2,15 @@
     <string name="app_name">BakingApp</string>
     <string name="error_message">An error occurred</string>
     <string name="no_video">No video available for this step.</string>
+    <string name="empty_listview">ListView is empty</string>
+    <string name="recipe_name">Recipe\'s name</string>
+    <string name="exo_rewind">Exo Rewind</string>
+    <string name="exo_repeat_toggle">Exo Repeat Toggle</string>
+    <string name="exo_play">Exo Play</string>
+    <string name="exo_pause">Exo Pause</string>
+    <string name="exo_fast_forward">Exo Fast Forward</string>
+    <string name="next_step">Next step</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
+    <string name="tablet">tablet</string>
 </resources>
