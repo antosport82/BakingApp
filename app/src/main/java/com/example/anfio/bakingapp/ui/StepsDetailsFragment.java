@@ -69,9 +69,6 @@ public class StepsDetailsFragment extends Fragment {
     private int mStepsSize;
     private boolean mTwoPane;
     private Unbinder unbinder;
-    private final String STATE_RESUME_WINDOW = Constants.STATE_RESUME_WINDOW;
-    private final String STATE_RESUME_POSITION = Constants.STATE_RESUME_POSITION;
-    private final String STATE_PLAYER_FULLSCREEN = Constants.STATE_PLAYER_FULLSCREEN;
     private int mResumeWindow;
     private long mResumePosition;
     private boolean mExoPlayerFullscreen = false;
@@ -130,9 +127,9 @@ public class StepsDetailsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
-            mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+            mResumeWindow = savedInstanceState.getInt(Constants.STATE_RESUME_WINDOW);
+            mResumePosition = savedInstanceState.getLong(Constants.STATE_RESUME_POSITION);
+            mExoPlayerFullscreen = savedInstanceState.getBoolean(Constants.STATE_PLAYER_FULLSCREEN);
         }
         mContext = getContext();
         if (mTwoPane) {
@@ -209,6 +206,7 @@ public class StepsDetailsFragment extends Fragment {
         simpleExoPlayerView.getPlayer().setPlayWhenReady(true);
     }
 
+    // fullscreen based on gist https://github.com/GeoffLedak/ExoplayerFullscreen
     private void initFullscreenDialog() {
         mFullScreenDialog = new Dialog(mContext, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             public void onBackPressed() {
@@ -298,9 +296,9 @@ public class StepsDetailsFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(STATE_RESUME_WINDOW, mResumeWindow);
-        outState.putLong(STATE_RESUME_POSITION, mResumePosition);
-        outState.putBoolean(STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
+        outState.putInt(Constants.STATE_RESUME_WINDOW, mResumeWindow);
+        outState.putLong(Constants.STATE_RESUME_POSITION, mResumePosition);
+        outState.putBoolean(Constants.STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
         super.onSaveInstanceState(outState);
     }
 }

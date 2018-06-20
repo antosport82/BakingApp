@@ -13,4 +13,6 @@
     <string name="ingredients">Ingredients</string>
     <string name="steps">Steps</string>
     <string name="tablet">tablet</string>
+    <string name="fullscreen_icon">Fullscreen icon</string>
+    <string name="exo_artwork">Exo artwork</string>
 </resources>
