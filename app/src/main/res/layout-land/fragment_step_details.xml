@@ -2,17 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <FrameLayout
+        android:id="@+id/main_media_frame"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:background="@android:color/black">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/player_view"
             android:layout_width="match_parent"
-            android:layout_height="320dp" />
+            android:layout_height="320dp"
+            app:fastforward_increment="1000"
+            app:rewind_increment="1000"/>
 
         <TextView
             android:id="@+id/tv_no_video"

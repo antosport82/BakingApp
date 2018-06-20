@@ -16,4 +16,8 @@ public class Constants {
     public static final String INT_KEY = "int_key";
     public static final String INT_STEP = "int_step";
     public static final String RECIPE_NAME = "int_step";
+
+    public static final String STATE_RESUME_WINDOW = "resumeWindow";
+    public static final String STATE_RESUME_POSITION = "resumePosition";
+    public static final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 }

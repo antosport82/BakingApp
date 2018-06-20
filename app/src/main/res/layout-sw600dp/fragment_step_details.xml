@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/player_view"
+    <FrameLayout
+        android:id="@+id/main_media_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_weight="4"
+        android:background="#000000">
 
-    <TextView
-        android:id="@+id/tv_no_video"
-        style="@style/myTextViewFragmentSteps"
-        android:background="#000000"
-        android:text="@string/no_video"
-        android:textColor="#ffffff"
-        android:visibility="gone" />
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            app:fastforward_increment="1000"
+            app:rewind_increment="1000" />
+
+        <TextView
+            android:id="@+id/tv_no_video"
+            style="@style/myTextViewFragmentSteps"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:text="@string/no_video"
+            android:textColor="#ffffff"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_step_text"
         style="@style/myTextViewFragmentSteps"
+        android:layout_height="0dp"
+        android:layout_weight="4"
         android:background="#ffe0cc" />
 
     <Button

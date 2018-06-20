@@ -30,13 +30,15 @@ public class StepsDetailsActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String recipeName = mSharedPreferences.getString(Constants.RECIPE_NAME, getString(R.string.recipe_name));
         setTitle(recipeName);
-        StepsDetailsFragment stepsDetailsFragment = new StepsDetailsFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // activity is not two-pane
-        stepsDetailsFragment.setPane(false);
-        stepsDetailsFragment.setStep(mStepId);
-        fragmentManager.beginTransaction()
-                .add(R.id.details_container_fragment, stepsDetailsFragment)
-                .commit();
+        if (savedInstanceState == null) {
+            StepsDetailsFragment stepsDetailsFragment = new StepsDetailsFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            // activity is not two-pane
+            stepsDetailsFragment.setPane(false);
+            stepsDetailsFragment.setStep(mStepId);
+            fragmentManager.beginTransaction()
+                    .add(R.id.details_container_fragment, stepsDetailsFragment)
+                    .commit();
+        }
     }
 }

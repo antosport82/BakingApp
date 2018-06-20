@@ -1,5 +1,6 @@
 package com.example.anfio.bakingapp.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,18 +11,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.anfio.bakingapp.R;
 import com.example.anfio.bakingapp.data.RecipeContract;
 import com.example.anfio.bakingapp.utilities.Constants;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -29,11 +37,14 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import butterknife.BindView;
@@ -58,6 +69,15 @@ public class StepsDetailsFragment extends Fragment {
     private int mStepsSize;
     private boolean mTwoPane;
     private Unbinder unbinder;
+    private final String STATE_RESUME_WINDOW = Constants.STATE_RESUME_WINDOW;
+    private final String STATE_RESUME_POSITION = Constants.STATE_RESUME_POSITION;
+    private final String STATE_PLAYER_FULLSCREEN = Constants.STATE_PLAYER_FULLSCREEN;
+    private int mResumeWindow;
+    private long mResumePosition;
+    private boolean mExoPlayerFullscreen = false;
+    private FrameLayout mFullScreenButton;
+    private ImageView mFullScreenIcon;
+    private Dialog mFullScreenDialog;
 
     private final LoaderManager.LoaderCallbacks<Cursor> stepLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
         @NonNull
@@ -79,6 +99,8 @@ public class StepsDetailsFragment extends Fragment {
                     mNoVideo.setVisibility(View.GONE);
                     simpleExoPlayerView.setVisibility(View.VISIBLE);
                     initializePlayer(mUrlVideo);
+                    initFullscreenDialog();
+                    initFullscreenButton();
                 } else {
                     simpleExoPlayerView.setVisibility(View.GONE);
                     mNoVideo.setVisibility(View.VISIBLE);
@@ -107,6 +129,11 @@ public class StepsDetailsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
+            mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
+            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+        }
         mContext = getContext();
         if (mTwoPane) {
             mBtNext.setVisibility(View.GONE);
@@ -117,6 +144,8 @@ public class StepsDetailsFragment extends Fragment {
                     if (player != null) {
                         player.stop();
                         player.release();
+                        mResumePosition = 0;
+                        mResumeWindow = 0;
                         player = null;
                     }
                     SharedPreferences sharedPreferences;
@@ -152,26 +181,98 @@ public class StepsDetailsFragment extends Fragment {
                 new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector =
                 new DefaultTrackSelector(videoTrackSelectionFactory);
-        player = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector);
+        LoadControl loadControl = new DefaultLoadControl();
+        player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(mContext), trackSelector, loadControl);
         simpleExoPlayerView.setPlayer(player);
         // Measures bandwidth during playback. Can be null if not required.
-        DefaultBandwidthMeter defaultbandwidthMeter = new DefaultBandwidthMeter();
+        //DefaultBandwidthMeter defaultbandwidthMeter = new DefaultBandwidthMeter();
         // Produces DataSource instances through which media data is loaded.
+        String userAgent = Util.getUserAgent(mContext, mContext.getApplicationInfo().packageName);
+        DefaultHttpDataSourceFactory httpDataSourceFactory =
+                new DefaultHttpDataSourceFactory(userAgent,
+                        null,
+                        DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+                        DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+                        true);
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
-                Util.getUserAgent(mContext, "yourApplicationName"), defaultbandwidthMeter);
+                null, httpDataSourceFactory);
         // This is the MediaSource representing the media to be played.
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(video);
         // Prepare the player with the source.
-        player.prepare(videoSource);
-        player.setPlayWhenReady(true);
+        boolean haveResumePosition = mResumeWindow != C.INDEX_UNSET;
+
+        if (haveResumePosition) {
+            simpleExoPlayerView.getPlayer().seekTo(mResumeWindow, mResumePosition);
+        }
+        simpleExoPlayerView.getPlayer().prepare(videoSource);
+        simpleExoPlayerView.getPlayer().setPlayWhenReady(true);
+    }
+
+    private void initFullscreenDialog() {
+        mFullScreenDialog = new Dialog(mContext, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mExoPlayerFullscreen)
+                    closeFullscreenDialog();
+                super.onBackPressed();
+            }
+        };
+    }
+
+    private void initFullscreenButton() {
+        PlaybackControlView controlView = simpleExoPlayerView.findViewById(R.id.exo_controller);
+        mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
+        mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
+        mFullScreenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mExoPlayerFullscreen)
+                    openFullscreenDialog();
+                else
+                    closeFullscreenDialog();
+            }
+        });
+    }
+
+    private void openFullscreenDialog() {
+        ((ViewGroup) simpleExoPlayerView.getParent()).removeView(simpleExoPlayerView);
+        mFullScreenDialog.addContentView(simpleExoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_fullscreen_skrink));
+        mExoPlayerFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
+    private void closeFullscreenDialog() {
+        ((ViewGroup) simpleExoPlayerView.getParent()).removeView(simpleExoPlayerView);
+        ((FrameLayout) getActivity().findViewById(R.id.main_media_frame)).addView(simpleExoPlayerView);
+        mExoPlayerFullscreen = false;
+        mFullScreenDialog.dismiss();
+        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_fullscreen_expand));
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         if (player != null) {
-            releasePlayer();
+            mResumeWindow = player.getCurrentWindowIndex();
+            mResumePosition = Math.max(0, player.getCurrentPosition());
+            if (Util.SDK_INT <= 23) {
+                releasePlayer();
+            }
+            if (mFullScreenDialog != null)
+                mFullScreenDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (player != null) {
+            mResumeWindow = player.getCurrentWindowIndex();
+            mResumePosition = Math.max(0, player.getCurrentPosition());
+            if (Util.SDK_INT > 23) {
+                releasePlayer();
+            }
         }
     }
 
@@ -182,8 +283,24 @@ public class StepsDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (player != null) {
+            releasePlayer();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(STATE_RESUME_WINDOW, mResumeWindow);
+        outState.putLong(STATE_RESUME_POSITION, mResumePosition);
+        outState.putBoolean(STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
+        super.onSaveInstanceState(outState);
     }
 }
